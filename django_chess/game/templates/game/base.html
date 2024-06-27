@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'game/main.css' %}">
+    <title> Chess.pobre</title>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="{% url 'home' %}" class="logo_a"><img src="{% static 'game/knight_image.jpg' %}" alt="Knight" class="logo" href="#"></a>
+        <a class="active" href="{% url 'home' %}">Home</a>
+        <a href="{% url 'play' %}">Play</a>
+        <a href="{% url 'about' %}">About</a>
+        {% if user.is_authenticated %}
+            <a class="login" href="{% url 'profile' %}">{{ user.username }}</a>
+        {% else %}
+            <a class="login" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+
+    
+    {% block content %}{% endblock %}
+</body>
+
+</html>
