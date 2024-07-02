@@ -50,3 +50,82 @@ body {
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
 }
+
+.profile_card {
+  position: absolute;
+  top: 75px;
+  left: 75px;
+  box-shadow: 0 4px 20px 0 rgba(160, 220, 136, 0.2);
+  max-width: 330px;
+  margin: auto;
+}
+
+.profile_card button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.profile_card h1 {
+  font-size: 25px;
+  color: rgb(137, 255, 141);
+  text-align: center;
+}
+
+.profile_card button:hover, a:hover {
+  opacity: 0.7;
+}
+.profile_card img {
+  border-radius: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.profile_card .description {
+  text-align: left;
+  font-size: 18px;
+  font-family: 'Impact';
+  color: rgba(6, 0, 0, 0.91);
+  padding: 15px;
+}
+
+.profile_card .value {
+  text-align: left;
+  font-size: 22px;
+  color: rgb(238, 247, 238);
+}
+
+.player_history{
+  position: absolute;
+  top: 100px;
+  left: 475px;
+  background-color: rgba(202, 221, 213, 0.477);
+  width: 400px;
+  margin: auto;
+  text-align: center;
+  padding: 10px;
+}
+
+.player_history h1 {
+  font-size: 25px;
+  color: rgb(137, 255, 141);
+  text-align: center;
+}
+
+.player_history .description {
+  font-size: 18px;
+  font-family: 'Impact';
+  color: rgba(6, 0, 0, 0.91);
+}
+
+.player_history .value {
+  font-size: 22px;
+  color: rgb(238, 247, 238);
+}

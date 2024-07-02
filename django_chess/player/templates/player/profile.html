@@ -2,6 +2,58 @@
 {% load static %}
 {% block content %}
 
+{% if not form %}
+<div class="profile_card">
+  <p></p>
+  <img src="{{ player.player_image.url }}" alt="John" style="width:80%">
+  <h1>Player Info</h1>
+  <p>
+  <span class="description">Username</span>
+  <span class="value">{{ player.username }}</span>
+  </p>
+  <p>
+    <span class="description">Player Name</span>
+    <span class="value">{{ player.player_name }}</span>
+  </p>
+  <p>
+    <span class="description">Player Age</span>
+    <span class="value">{{ player.player_age }}</span>
+  </p>
+  <p>
+    <span class="description">Player Country</span>
+    <span class="value">{{ player.player_country }}</span>
+  </p>
+  <p>
+    <span class="description">Player Email</span>
+    <span class="value">{{ player.player_email }}</span>
+  </p>
+    <form action="" method="post">
+      {% csrf_token %}
+      <button name="Edit Profile" value="">Edit Profile</button>
+  </form>
+</div>
 
+<div class="player_history">
+<h1>Player Statistics</h1>
+<span class="description">Total Games</span>
+<span class="value">&nbsp;&nbsp;{{ player.total_number_games }}&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-chess-board"></i></span>
+<p></p>
+<span class="description">Total Wins</span>
+<span class="value">&nbsp;&nbsp;{{ player.total_number_wins }}&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-trophy"></i></span>
+<p></p>
+<span class="description">Total Losses</span>
+<span class="value">&nbsp;&nbsp;{{ player.total_number_losses }}&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-flag"></i></span>
+</div>
+
+{% endif %}
+
+
+{% if form %}
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="submit">
+</form>
+{% endif %}
 
 {% endblock %}
