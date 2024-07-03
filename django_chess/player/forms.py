@@ -1,9 +1,8 @@
-from django import forms
+from django.forms import ModelForm
+from player.models import Player
 
-class PlayerForm(forms.Form):
-    player_name = forms.CharField()
-    player_age = forms.IntegerField()
-    player_country = forms.CharField()
-    player_email = forms.EmailField()
-    player_image = forms.ImageField()
+class PlayerForm(ModelForm):
+    class Meta:
+        model = Player
+        fields = ['player_name', 'player_age', 'player_country', 'player_email','player_image']
 

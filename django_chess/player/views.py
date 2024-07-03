@@ -37,32 +37,18 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    user = request.user
-    player = Player.objects.filter(user=user).first()
+    player = Player.objects.filter(user=request.user).first()
 
     if request.method == 'GET':
         return render(request,'player/profile.html', context={'player':player})
     elif request.method=='POST':
-        form = PlayerForm(request.POST, request.FILES)
+        form = PlayerForm(request.POST, request.FILES, instance=player)
         if form.is_valid():
-            player_name = form.cleaned_data['player_name']
-            player_age = form.cleaned_data['player_age']
-            player_country = form.cleaned_data['player_country']
-            player_email = form.cleaned_data['player_email']
-            player_image = form.cleaned_data['player_image']
-            player.player_name = player_name
-            player.player_age = player_age
-            player.player_country = player_country
-            player.player_email = player_email
-            player.player_image = player_image
-            player.save()
+            form.save()
             return render(request,'player/profile.html', context = {'player':player})
         else:
-            print('FORM IS NOT VALID')
-            print(form.errors)
-            print(request.POST)
             form = PlayerForm()
-            return render(request,'player/profile.html', context={'form':form})
+            return render(request,'player/profile.html', context={'form':PlayerForm(instance=player)})
     
-    return render(request,'player/profile.html')#, context={'player':player})
+    return render(request,'player/profile.html', context={'player':player})
 
