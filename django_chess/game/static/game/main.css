@@ -129,3 +129,65 @@ body {
   font-size: 22px;
   color: rgb(238, 247, 238);
 }
+.game_menu {
+  max-width: 300 px;
+  padding: 10px;
+  position: center;
+  background-color: rgba(202, 221, 213, 0.477);
+  max-width: 330px;
+  margin: auto;
+  text-align: center;
+  border-radius: 10%;
+  position: relative;
+  top: 100px;
+}
+.game_menu h1{
+  font-size: 25px;
+  color: rgb(137, 255, 141);
+}
+.game_menu button {
+  border: 4 px;
+  border-color: #ddd;
+  border-radius: 10%;
+  outline: 0;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  cursor: pointer;
+  width: 60%;
+  font-size: 18px;
+}
+
+.chessboard {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  width: 80vmin;
+  height: 80vmin;
+  border: 5px solid #000000;
+  box-sizing: border-box;
+  margin-top: calc(50vh - 45vmin);
+  margin-bottom: calc(50vh - 40vmin);
+}
+
+.chessboard .row {
+  flex: 1;
+  display: flex;
+}
+
+.chessboard .black {
+  flex: 1;
+  background-color: #aeb6ab;
+}
+
+.chessboard .white {
+  flex: 1;
+  background-color: #fff;
+}
+.chessboard .piece{
+  text-align: center;
+  height: 3rem;
+  line-height: 3rem;
+  font-size: 5vmin;
+  -webkit-text-stroke: 1px white;
+}

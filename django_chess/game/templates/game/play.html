@@ -1,6 +1,13 @@
 {% extends "game/base.html" %}
 {% load static %}
 {% block content %}
-This is the play page!
-<!--Add content here-->
+
+<div class="game_menu">
+    <a><h1>Game Menu</h1></a>
+    <a href="{% url 'sandbox' %}"><button>Sandbox Game</button></a>
+    <a href="#"><button>Play Offline</button></a>
+    <a href="#"><button>Play Online</button></a>
+    <a href="#"><button>Play Against Bot</button></a>
+</div>
+
 {% endblock %}

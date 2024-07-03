@@ -1,0 +1,27 @@
+{% extends "game/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="chessboard">
+    {% for row  in board  %}         
+        <div class="row">
+            {% with index=forloop.counter %}            
+                {% for square  in row  %}
+                    {% with key=square %}
+                        {% if index|divisibleby:2 %}
+                            <div class="{% cycle 'black' 'white' %}">
+                                <div class="piece">{{ dic_pieces|get_item:key|safe }}</div>
+                            </div>
+                        {% else %}
+                            <div class="{% cycle 'white' 'black' %}">
+                                <div class="piece">{{ dic_pieces|get_item:key|safe }}</div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {%endfor%}
+            {% endwith %}    
+        </div>
+    {%endfor%}
+    </div>
+
+{% endblock %}

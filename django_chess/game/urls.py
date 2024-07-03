@@ -8,5 +8,6 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('play/', views.play, name='play'),
     path('accounts/', include('django.contrib.auth.urls')),
-     path("favicon.ico", views.favicon, name='favicon')
+    path("favicon.ico", views.favicon, name='favicon'),
+    path("sandbox/", views.sandbox, name='sandbox')
 ]
