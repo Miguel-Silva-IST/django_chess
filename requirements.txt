@@ -4,3 +4,4 @@ crispy-bootstrap4 == 2024.1
 Pillow == 10.3.0
 djangorestframework>=3.12.4,<3.13
 psycopg[binary]
+django-cors-headers == 4.4.0

@@ -185,9 +185,10 @@ body {
   background-color: #fff;
 }
 .chessboard .piece{
+  display: grid;
   text-align: center;
+  align-items: center;
   height: 3rem;
   line-height: 3rem;
   font-size: 5vmin;
-  -webkit-text-stroke: 1px white;
 }

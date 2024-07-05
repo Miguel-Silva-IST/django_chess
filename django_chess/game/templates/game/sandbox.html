@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="chessboard">
-    {% for row  in board  %}         
+    {% for row  in chessboard  %}         
         <div class="row">
             {% with index=forloop.counter %}            
                 {% for square  in row  %}
@@ -22,6 +22,12 @@
             {% endwith %}    
         </div>
     {%endfor%}
-    </div>
+</div>
+
+<button>CLICK</button>
+<p>{{ csrf_token }}</p>
+
+<div id="chessboard" data-chessboard="{{ chessboard }}"></div>
+<div id="csrf" data-csrf="{{ csrf_token }}"></div>
 
 {% endblock %}

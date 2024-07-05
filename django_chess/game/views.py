@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import FileResponse, HttpRequest, HttpResponse
+from django.http import FileResponse, HttpRequest, HttpResponse,JsonResponse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
 from game.chess_engine.main import *
+import json
+from urllib.parse import unquote_plus
 
 
 
@@ -28,7 +30,7 @@ def sandbox(request):
     #initiates a board and passes it as context
     if request.method == 'GET':
         #take into account if page is refreshed, game is lost
-        board = create_new_board()
+        chessboard = create_new_board()
         dic_pieces = {
             -1 : '<i class="fa-regular fa-chess-pawn"></i>',
             -2 : '<i class="fa-regular fa-chess-rook"></i>',
@@ -44,7 +46,7 @@ def sandbox(request):
              6 : '<i class="fa-solid fa-chess-king"></i>',
              None : ''
         }
-        return render(request, 'game/sandbox.html', context = {'board':board, 'dic_pieces':dic_pieces})
+        return render(request, 'game/sandbox.html', context = {'chessboard':chessboard, 'dic_pieces':dic_pieces})
 
 
 
@@ -55,6 +57,25 @@ def sandbox(request):
 def favicon(request: HttpRequest) -> HttpResponse:
     file = (settings.BASE_DIR / "game" / "static" / "game" / "favicon.png").open("rb")
     return FileResponse(file)
+
+
+
+
+def test(request):
+    if request.method == 'POST':
+        body = request.body.decode('utf-8')
+        board_str = json.loads(body)['board']
+        try:
+            board = eval(board_str) #doesnt seem good solution...
+        except:
+            raise Exception('Failed to parse board')
+        print(board)
+        
+        data = {'board':board}
+        return JsonResponse(data)
+    else:
+        data = {'message': 'Hello, World!'}
+        return JsonResponse(data)
 
 
 
