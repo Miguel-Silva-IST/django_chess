@@ -4,10 +4,9 @@ from django.http import FileResponse, HttpRequest, HttpResponse,JsonResponse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
 from game.chess_engine.main import *
-import json
 from urllib.parse import unquote_plus
-from .utils import index_chessboard
-
+from .utils import add_index_chessboard, remove_index_chessboard, convert_index_to_pos
+import json, ast
 
 
 
@@ -32,9 +31,7 @@ def sandbox(request):
     if request.method == 'GET':
         #take into account if page is refreshed, game is lost
         chessboard = create_new_board()
-        indexed_chessboard =index_chessboard(chessboard)
-        print('SANDBOX VIEW')
-        print(indexed_chessboard)
+        indexed_chessboard = add_index_chessboard(chessboard)
         dic_pieces = {
             -1 : '<i class="fa-regular fa-chess-pawn"></i>',
             -2 : '<i class="fa-regular fa-chess-rook"></i>',
@@ -50,7 +47,7 @@ def sandbox(request):
              6 : '<i class="fa-solid fa-chess-king"></i>',
              None : ''
         }
-        return render(request, 'game/sandbox.html', context = {'indexed_chessboard':indexed_chessboard, 'dic_pieces':dic_pieces})
+        return render(request, 'game/sandbox.html', context = {'chessboard':chessboard,'indexed_chessboard':indexed_chessboard, 'dic_pieces':dic_pieces})
 
 
 
@@ -67,19 +64,25 @@ def favicon(request: HttpRequest) -> HttpResponse:
 
 def test(request):
     if request.method == 'POST':
-        body = request.body.decode('utf-8')
-        board_str = json.loads(body)['board']
-        try:
-            board = eval(board_str) #doesnt seem good solution...
-        except:
-            raise Exception('Failed to parse board')
+        decoded_body = request.body.decode('utf-8')
+        body = json.loads(decoded_body)
+        board = body['board']
+        #added because the first time the board is acessed is through context var. Need to replace by postgres database. Howver makes more sense to replace None by 0 since js cant parse None...
+        if isinstance(board, str):
+            try:
+                board = eval(body['board'])
+            except:
+                raise Exception(f'Couldnt parse board {body}')
         
-        indexed_chessboard =index_chessboard(board)
+        moves = [convert_index_to_pos(index, board) for index in body['moves']]
+        move_result =  move(board,moves[0],moves[1])
+        if move_result:
+            data = {'move':True, 'updated_board':move_result}
+        else:
+            data = {'move':False}
         
-        data = {'board':indexed_chessboard}
-        return JsonResponse(data)
-    else:
-        data = {'message': 'Hello, World!'}
+        print(data)
+        
         return JsonResponse(data)
 
 

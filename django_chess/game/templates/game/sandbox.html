@@ -9,11 +9,11 @@
                 {% for square  in row  %}
                     {% with key=square.0 piece_index=square.1 %}
                         {% if index|divisibleby:2 %}
-                            <div class="{% cycle 'black' 'white' %}">
+                            <div class="{% cycle 'black' 'white' %}" onclick="move_track(moves,{{ piece_index }})">
                                 <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
                             </div>
                         {% else %}
-                            <div class="{% cycle 'white' 'black' %}">
+                            <div class="{% cycle 'white' 'black' %}" onclick="move_track(moves,{{ piece_index }})">
                                 <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
                             </div>
                         {% endif %}

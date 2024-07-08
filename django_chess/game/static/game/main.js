@@ -1,85 +1,98 @@
-dic_pieces = {
-    '-1' : '<i class="fa-regular fa-chess-pawn"></i>',
-    '-2' : '<i class="fa-regular fa-chess-rook"></i>',
-    '-3' : '<i class="fa-regular fa-chess-knight"></i>',
-    '-4' : '<i class="fa-regular fa-chess-bishop"></i>',
-    '-5' : '<i class="fa-regular fa-chess-queen"></i>',
-    '-6' : '<i class="fa-regular fa-chess-king"></i>',
-     '1' : '<i class="fa-solid fa-chess-pawn"></i>',
-     '2' : '<i class="fa-solid fa-chess-rook"></i>',
-     '3' : '<i class="fa-solid fa-chess-knight"></i>',
-     '4' : '<i class="fa-solid fa-chess-bishop"></i>',
-     '5' : '<i class="fa-solid fa-chess-queen"></i>',
-     '6' : '<i class="fa-solid fa-chess-king"></i>',
-     '' : ''
-}
+var updated_board;
+let moves = [];
 
 
 
+function SendBoardMove() {
+    return new Promise((resolve, reject) => {
 
-
-$(document).ready(function() {
-    $('button').click(function() {
-
-        // Define a variable to store the result
-        var request_response;
+    // Define a variable to store the result
+    var request_response;
+    //in case there was a board update it picks from last update
+    if (updated_board){
+        console.log('UPDATED BOARD WORKED')
+        board = updated_board
+    } else{
         const chessboard = document.getElementById("chessboard");
         board = chessboard.getAttribute("data-chessboard");
-        console.log(board)
-
-        const csrftoken = document.getElementById('csrf').getAttribute('data-csrf');
-        console.log(csrftoken)
-
-       // Set up default AJAX settings
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
     }
-});
 
-// Your AJAX call
-$.ajax({
-    type: "POST",
-    url: "http://127.0.0.1:8000/test/",
-    contentType: "application/json",
-    data: JSON.stringify({
-        'board': board
-    }),
-    success: function(data) {
-        // Store the result in the variable
-        var request_response = data;
+    const csrftoken = document.getElementById('csrf').getAttribute('data-csrf');
 
-        // Log the result to the console
-        console.log("Result from AJAX:", request_response);
-
-        // Update the DOM to display the result
-        $('#ajax-response').text(data.message);
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-        // Handle errors if needed
-        console.error('Error: ' + textStatus + ' - ' + errorThrown);
-
-        // Update the DOM with the error message if necessary
-        $('#ajax-response').text('Error: ' + textStatus + ' - ' + errorThrown);
-    }
-});
-
-
-        //testing piecen update in js
-
-        // Step 2: Get the <div> element where you want to render the HTML
-        const divElement = document.getElementById('0');
-        if (divElement) {
-            //just checkoing if i can search the dic for the html
-            const htmlString = dic_pieces['1'];
-            divElement.innerHTML = htmlString;
-        } else {
-            console.error('Element with class "piece" and id "0" not found.');
+    // Set up default AJAX settings
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
-
-
-        // Note: ajaxResult here will be undefined because $.ajax is asynchronous
-        // If you need to use ajaxResult outside of $.ajax, consider async handling
-        // or pass it to another function inside success callback.
     });
-});
+
+    //AJAX call
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/test/",
+        contentType: "application/json",
+        data: JSON.stringify({
+            'board': board,
+            'moves': moves
+        }),
+        success: function(data) {
+            //returns promise
+            resolve(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Handle errors if needed
+            console.error('Error: ' + textStatus + ' - ' + errorThrown);
+        }
+    });
+})
+};
+
+
+//Saves piece index thatplayer wants to move
+function move_track(moves, piece_index){
+    console.log(piece_index)
+    if (moves.length == 0) {
+        moves.push(piece_index)
+        console.log(moves)
+        return 0
+    }
+    else if (moves.length == 1){
+        if (moves[0].toString() == piece_index.toString()){
+            console.log(moves[0].toString(), '==',piece_index.toString())
+            moves.pop()
+            console.log('First move was removed')
+            return 0
+        } else{
+            moves.push(piece_index)
+            console.log(moves)
+            console.log('Submiting piece_index:',moves, 'to the endpoint /moves/')
+            SendBoardMove().then(function(result) {
+                if (result.move){
+                    updated_board = result.updated_board
+                    console.log('There was a move!')
+                    render_updated_board()
+                } else{
+                    console.log('Impossible move!')
+                    moves.pop()
+                    moves.pop()
+                }
+                
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+            return 0
+
+        } 
+    }
+};
+
+
+function render_updated_board(){
+    console.log('MOVES---->',moves)
+    square_i = document.getElementById(moves[0])
+    square_f = document.getElementById(moves[1])
+    square_f.innerHTML = square_i.innerHTML 
+    square_i.innerHTML = ''
+    moves.pop()
+    moves.pop()
+}
