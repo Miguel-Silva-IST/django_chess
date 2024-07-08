@@ -1,11 +1,26 @@
-// Use csrfToken for your AJAX requests
+dic_pieces = {
+    '-1' : '<i class="fa-regular fa-chess-pawn"></i>',
+    '-2' : '<i class="fa-regular fa-chess-rook"></i>',
+    '-3' : '<i class="fa-regular fa-chess-knight"></i>',
+    '-4' : '<i class="fa-regular fa-chess-bishop"></i>',
+    '-5' : '<i class="fa-regular fa-chess-queen"></i>',
+    '-6' : '<i class="fa-regular fa-chess-king"></i>',
+     '1' : '<i class="fa-solid fa-chess-pawn"></i>',
+     '2' : '<i class="fa-solid fa-chess-rook"></i>',
+     '3' : '<i class="fa-solid fa-chess-knight"></i>',
+     '4' : '<i class="fa-solid fa-chess-bishop"></i>',
+     '5' : '<i class="fa-solid fa-chess-queen"></i>',
+     '6' : '<i class="fa-solid fa-chess-king"></i>',
+     '' : ''
+}
 
-//const csrftoken = getCookie('csrftoken');
-//console.log(csrftoken)
+
+
 
 
 $(document).ready(function() {
     $('button').click(function() {
+
         // Define a variable to store the result
         var request_response;
         const chessboard = document.getElementById("chessboard");
@@ -48,6 +63,19 @@ $.ajax({
         $('#ajax-response').text('Error: ' + textStatus + ' - ' + errorThrown);
     }
 });
+
+
+        //testing piecen update in js
+
+        // Step 2: Get the <div> element where you want to render the HTML
+        const divElement = document.getElementById('0');
+        if (divElement) {
+            //just checkoing if i can search the dic for the html
+            const htmlString = dic_pieces['1'];
+            divElement.innerHTML = htmlString;
+        } else {
+            console.error('Element with class "piece" and id "0" not found.');
+        }
 
 
         // Note: ajaxResult here will be undefined because $.ajax is asynchronous

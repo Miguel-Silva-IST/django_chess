@@ -3,18 +3,18 @@
 {% block content %}
 
 <div class="chessboard">
-    {% for row  in chessboard  %}         
+    {% for row  in indexed_chessboard  %}         
         <div class="row">
             {% with index=forloop.counter %}            
                 {% for square  in row  %}
-                    {% with key=square %}
+                    {% with key=square.0 piece_index=square.1 %}
                         {% if index|divisibleby:2 %}
                             <div class="{% cycle 'black' 'white' %}">
-                                <div class="piece">{{ dic_pieces|get_item:key|safe }}</div>
+                                <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
                             </div>
                         {% else %}
                             <div class="{% cycle 'white' 'black' %}">
-                                <div class="piece">{{ dic_pieces|get_item:key|safe }}</div>
+                                <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
                             </div>
                         {% endif %}
                     {% endwith %}

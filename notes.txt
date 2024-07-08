@@ -1,0 +1,38 @@
+Sexta feira resumo:
+
+1 - Post request com ajax feito - foi preciso passar o csrf token como variavel num div para conseguir 
+aceder no contexto do json
+2 - Post request foi recebido do lado do servidor e board object parsed com sucesso
+3 - Modifiquei a estrtura do objeto board para em vez de apenas o numero da pela ter numero:index.
+O index aqui é utilizado com o objetivo de idenficar cada peça no tabuleiro como unica e se for necessario
+update entao consegues-se alterar a peça. Importante notar que a estrtura do board mudou apenas para o frontend,
+para o backend continua exatamente igual. É preciso perceber como é que se vai passar depois ao endpoitn /move/
+porque de momento o board está guardado numa variavel de contexto que tem o index... será que se adiciona outra 
+função para desconverter para board normal outra vez? Em termos de performance é fraco...
+
+Outro tópico a ter em conta é a forma como os dados do board estao a ser guardados. Neste momento temos:
+
+
+View sandbox(board stored in context) -> frontend parses html (board keeps stored in html) ->
+each time board move html updated (js calls ajax post on move endpoint)
+
+PROBLEMA: Ultimo estado do tabuleiro está a ser guardado só em html. Se houver refresh de pagina (um novo get request)
+perde-se tudo.
+
+Resolução: usar o modelo game_detail para auxiliar o storage 
+
+a - assim que peça se move, quando o endpoint move é chamado, em caso de sucesso é preciso criar uma nova linha no modelo
+param acrescentar uma nova jogada
+b - alterar a view do sandbox para que cada vez se faz um get a esse endpoint, verificar se o jogador nao tem nenhum 
+jogo ativo, sendo que o fim do jogo pode ser marcado com uma linha na database com a ssk a -1 por exemplo.
+
+
+
+PASSOS A SEGUIR DEPOIS: 
+1- Implementar clickable para todos os quadrados
+2 - Implementar a logica que já está testada de clicar e desclicar em botões quando se carrega na mesma peça 2 vezes seguidas
+3 - Trocar endpoint de test por move e  usar o chess engine para calcular a jogada.
+4 - OPCIONAL: Para o frontend ser mais leve, à função de move pode ser adicionada uma lógica para indicar quais os
+squares que foram alterados e assim sendo so esses são alterados.
+5 -adicionar toggle para inverter a view das peças (nao estou a ver como fazer isso porque o render é feito pelo django
+logo o mais fácil aí é mesmo um redirect...)
