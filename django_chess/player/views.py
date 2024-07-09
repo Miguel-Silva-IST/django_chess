@@ -14,7 +14,7 @@ def signup(request):
         if form.is_valid():
             new_user = form.save()
             #Uppon signup it also creates new Player object
-            last_created_player = Player.objects.order_by('suk_player').first()
+            last_created_player = Player.objects.order_by('-suk_player').first()
             if not last_created_player:
                 #first user being created
                 suk_new_player = 1

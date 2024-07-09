@@ -6,8 +6,6 @@ let moves = [];
 function SendBoardMove() {
     return new Promise((resolve, reject) => {
 
-    // Define a variable to store the result
-    var request_response;
     //in case there was a board update it picks from last update
     if (updated_board){
         console.log('UPDATED BOARD WORKED')
@@ -18,6 +16,7 @@ function SendBoardMove() {
     }
 
     const csrftoken = document.getElementById('csrf').getAttribute('data-csrf');
+    const suk_player = document.getElementById('suk_player').getAttribute('data-suk_player');
 
     // Set up default AJAX settings
     $.ajaxSetup({
@@ -33,7 +32,8 @@ function SendBoardMove() {
         contentType: "application/json",
         data: JSON.stringify({
             'board': board,
-            'moves': moves
+            'moves': moves,
+            'suk_player': suk_player
         }),
         success: function(data) {
             //returns promise
@@ -46,6 +46,43 @@ function SendBoardMove() {
     });
 })
 };
+
+
+
+function EndGame() {
+    return new Promise((resolve, reject) => {
+        
+    const csrftoken = document.getElementById('csrf').getAttribute('data-csrf');
+    const suk_player = document.getElementById('suk_player').getAttribute('data-suk_player');
+
+    // Set up default AJAX settings
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    //AJAX call
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/end_game/",
+        contentType: "application/json",
+        data: JSON.stringify({
+            'end_game': 1,
+            'suk_player': suk_player
+        }),
+        success: function(data) {
+            //returns promise
+            resolve(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Handle errors if needed
+            console.error('Error: ' + textStatus + ' - ' + errorThrown);
+        }
+    });
+})
+};
+
 
 
 //Saves piece index thatplayer wants to move

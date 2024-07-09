@@ -24,10 +24,11 @@
     {%endfor%}
 </div>
 
-<button>CLICK</button>
-<p>{{ csrf_token }}</p>
+<button onclick="EndGame()">End Game</button>
+
 
 <div id="chessboard" data-chessboard="{{ chessboard }}"></div>
 <div id="csrf" data-csrf="{{ csrf_token }}"></div>
+<div id="suk_player" data-suk_player="{{ suk_player }}"></div>
 
 {% endblock %}
