@@ -62,7 +62,7 @@ def favicon(request: HttpRequest) -> HttpResponse:
 
 
 
-def test(request):
+def move(request):
     if request.method == 'POST':
         decoded_body = request.body.decode('utf-8')
         body = json.loads(decoded_body)
@@ -75,7 +75,7 @@ def test(request):
                 raise Exception(f'Couldnt parse board {body}')
         
         moves = [convert_index_to_pos(index, board) for index in body['moves']]
-        move_result =  move(board,moves[0],moves[1])
+        move_result =  check_move(board,moves[0],moves[1])
         if move_result:
             data = {'move':True, 'updated_board':move_result}
         else:

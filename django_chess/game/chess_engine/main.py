@@ -7,13 +7,15 @@ def create_new_board():
     return board.board
 
 
-def move(board_state,pos_i,pos_f):
+def check_move(board_state,pos_i,pos_f):
     board = Board(board_state)
-    piece_number = board_state[pos_i[0]][pos_i[1]]
     piece = board.get_board_piece(pos_i)
-    check_moves = PossibleMoves(board, piece)
-    check_moves.check_possible_moves()
-    if pos_f in check_moves.possible_moves:
+    #if no piece in the initial position then false
+    if not piece:
+        return False
+    piece_moves = PossibleMoves(board, piece)
+    piece_moves.check_possible_moves()
+    if pos_f in piece_moves.possible_moves:
         board_state[pos_f[0]][pos_f[1]] = board_state[pos_i[0]][pos_i[1]]
         board_state[pos_i[0]][pos_i[1]] = None
         return board_state

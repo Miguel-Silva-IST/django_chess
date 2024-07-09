@@ -29,7 +29,7 @@ function SendBoardMove() {
     //AJAX call
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8000/test/",
+        url: "http://127.0.0.1:8000/move/",
         contentType: "application/json",
         data: JSON.stringify({
             'board': board,
