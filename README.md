@@ -2,28 +2,20 @@
 
 ## Description
 
-A chess game developed using Django that allows users to play online, featuring user authentication, game creation, and real-time gameplay.
+Multiplayer Chess game, similar to Chess.com developed in Django framework. 
 
 ## Features
 
 - User registration and authentication
-- Create and join games
-- Play against other users
-- Move validation and game rules enforcement
-- Responsive design
+- Sandbox mode
+- Multiplayer mode (not developed yet)
+- Computer engine mode (not developed yet)
+- Moves validation
 
-## Installation
+## Application Architecture
 
-### Prerequisites
 
-- Python 3.x
-- Django
+## Sandbox Mode
+![Captura de ecrã 2024-07-17 162544](https://github.com/user-attachments/assets/45f3cae6-c399-4d0f-9fc8-228f0b6efb7f)
 
-### Steps
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/yourusername/chess-game.git
-   cd chess-game
 
