@@ -8,9 +8,10 @@ function SendBoardMove() {
 
     //in case there was a board update it picks from last update
     if (updated_board){
-        console.log('UPDATED BOARD WORKED')
+        console.log('Getting board from JS variable')
         board = updated_board
     } else{
+        console.log('Getting board from template variable')
         const chessboard = document.getElementById("chessboard");
         board = chessboard.getAttribute("data-chessboard");
     }
@@ -31,7 +32,6 @@ function SendBoardMove() {
         url: "http://127.0.0.1:8000/move/",
         contentType: "application/json",
         data: JSON.stringify({
-            'board': board,
             'moves': moves,
             'suk_player': suk_player
         }),
@@ -133,3 +133,19 @@ function render_updated_board(){
     moves.pop()
     moves.pop()
 }
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const endGameButton = document.getElementById('end_game_button');
+    const endGamePopup = document.getElementById('end_game_popup');
+    const closePopupButton = document.getElementById('close_end_game_popup');
+  
+    endGameButton.addEventListener('click', () => {
+      endGamePopup.style.display = 'block';
+    });
+  
+    closePopupButton.addEventListener('click', () => {
+      endGamePopup.style.display = 'none';
+    });
+  });
+  

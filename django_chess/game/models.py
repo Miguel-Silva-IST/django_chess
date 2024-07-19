@@ -4,11 +4,11 @@ from player.models import Player
 import datetime
 
 class Game(models.Model):
-    suk_game = models.IntegerField(primary_key=True)
+    suk_game = models.AutoField(primary_key=True)
     suk_player_1 = models.ForeignKey(Player,related_name='games_as_player_1', on_delete=models.CASCADE) 
     suk_player_2 = models.ForeignKey(Player, related_name='games_as_player_2', on_delete=models.CASCADE)
     game_active = models.BooleanField(default=False)
-    dtm_game = models.DateField(default=datetime.date.today)
+    dtm_game = models.DateField(default=datetime.datetime.now)
 
 class GameDetail(models.Model):
     suk_game = models.ForeignKey(Game, on_delete=models.CASCADE)

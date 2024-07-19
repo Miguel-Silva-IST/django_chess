@@ -1,30 +1,45 @@
 {% extends "game/base.html" %}
 {% load static %}
 {% block content %}
-
-<div class="chessboard">
-    {% for row  in indexed_chessboard  %}         
-        <div class="row">
-            {% with index=forloop.counter %}            
-                {% for square  in row  %}
-                    {% with key=square.0 piece_index=square.1 %}
-                        {% if index|divisibleby:2 %}
-                            <div class="{% cycle 'black' 'white' %}" onclick="move_track(moves,{{ piece_index }})">
-                                <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
-                            </div>
-                        {% else %}
-                            <div class="{% cycle 'white' 'black' %}" onclick="move_track(moves,{{ piece_index }})">
-                                <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
-                            </div>
-                        {% endif %}
-                    {% endwith %}
-                {%endfor%}
-            {% endwith %}    
+<div class="chessboard_container">
+    <div class="chessboard">
+        {% for row  in indexed_chessboard  %}         
+            <div class="row">
+                {% with index=forloop.counter %}            
+                    {% for square  in row  %}
+                        {% with key=square.0 piece_index=square.1 %}
+                            {% if index|divisibleby:2 %}
+                                <div class="{% cycle 'black' 'white' %}" onclick="move_track(moves,{{ piece_index }})">
+                                    <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
+                                </div>
+                            {% else %}
+                                <div class="{% cycle 'white' 'black' %}" onclick="move_track(moves,{{ piece_index }})">
+                                    <div class="piece" id="{{ piece_index }}">{{ dic_pieces|get_item:key|safe }}</div>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    {%endfor%}
+                {% endwith %}    
+            </div>
+        {%endfor%}
+    </div>
+    <div class="game_settings">
+        <button onclick="EndGame()" id="end_game_button"><i class="fa-regular fa-flag"></i></button>
+    </div>
+    <div class="end_game_popup" id ="end_game_popup">
+        <button id="close_end_game_popup"><i class="fa-solid fa-x"></i></button>
+        <div class="game_menu" id="close_end_game_popup_div">
+            <a><h1>Game Menu</h1></a>
+            <a href="{% url 'sandbox' %}"><button>Restart Game</button></a>
+            <a href="{% url 'home' %}"><button>Retur Home</button></a>
         </div>
-    {%endfor%}
+        
+    </div>
+    
 </div>
 
-<button onclick="EndGame()">End Game</button>
+
+
 
 
 <div id="chessboard" data-chessboard="{{ chessboard }}"></div>

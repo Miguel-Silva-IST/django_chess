@@ -139,7 +139,7 @@ body {
   text-align: center;
   border-radius: 10%;
   position: relative;
-  top: 100px;
+  transform: translateY(+50%);
 }
 .game_menu h1{
   font-size: 25px;
@@ -158,7 +158,13 @@ body {
   font-size: 18px;
 }
 
-.chessboard {
+.chessboard_container{
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.chessboard_container .chessboard {
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -170,25 +176,56 @@ body {
   margin-bottom: calc(50vh - 40vmin);
 }
 
-.chessboard .row {
+.chessboard_container .chessboard .row {
   flex: 1;
   display: flex;
 }
 
-.chessboard .black {
+.chessboard_container .chessboard .black {
   flex: 1;
   background-color: #aeb6ab;
 }
 
-.chessboard .white {
+.chessboard_container .chessboard .white {
   flex: 1;
   background-color: #fff;
 }
-.chessboard .piece{
+.chessboard_container .chessboard .piece{
   display: grid;
   text-align: center;
   align-items: center;
   height: 3rem;
   line-height: 3rem;
   font-size: 5vmin;
+}
+.chessboard_container .game_settings {
+  position: absolute;
+  left: 35vh; /* Adjust as necessary to position left */
+  transform: translateY(-50%);
+  top: 50%;
+  padding: 10px;
+  background-color: #333;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+.chessboard_container .end_game_popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none; 
+}
+.chessboard_container .end_game_popup #close_end_game_popup {
+  float: right;
+}
+.chessboard_container .end_game_popup .game_menu {
+  max-width: none;
+  padding: 10px;
+  background-color: rgba(2, 35, 22, 0.763);
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  border-radius: 10%;
+  position: static;
+  transform: none;
 }

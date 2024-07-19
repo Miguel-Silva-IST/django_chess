@@ -9,6 +9,8 @@ from player.forms import PlayerForm
 
 #signup page
 def signup(request):
+    """User login page. If POST request, evaluates if new user form
+    is valid."""
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -37,6 +39,8 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    """Shows user profile and statistics. It allows profile edit
+    via form submition"""
     player = Player.objects.filter(user=request.user).first()
 
     if request.method == 'GET':

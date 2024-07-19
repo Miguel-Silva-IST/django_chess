@@ -29,6 +29,11 @@ def play(request):
 
 @login_required
 def sandbox(request):
+    """
+    First checks for any active game user might have to avoid lost games
+    If user still has active game, then it loads the last board state and game
+    is resumed. Else it starts a new game and renders the new game board. 
+    """
     if request.method == 'GET':
         #find if there are active games for user
         user = request.user
@@ -36,18 +41,13 @@ def sandbox(request):
         last_active_game = Game.objects.filter(Q(suk_player_1 = player.suk_player) | Q(suk_player_2 = player.suk_player), game_active = True ).first()
         #if no active games then starts one
         if not last_active_game:
-            last_game = Game.objects.order_by('-suk_game').first()
-            if not last_game:
-                suk_game = 1
-            else:
-                suk_game = last_game.suk_game +1
             #creates new game
-            game = Game(suk_game = suk_game, suk_player_1 = player,suk_player_2 = player, game_active = True)
+            game = Game(suk_player_1 = player,suk_player_2 = player, game_active = True)
             game.save()
             #inserts first row in game detail
-            game_detail = GameDetail(suk_game = game, suk_player = player, board_state = create_new_board())
-            game_detail.save()
             board_state = create_new_board()
+            game_detail = GameDetail(suk_game = game, suk_player = player, board_state = board_state)
+            game_detail.save()
 
         #if game still ative, returns from the last game
         else:
@@ -73,38 +73,43 @@ def sandbox(request):
         return render(request, 'game/sandbox.html', context = {'chessboard':board_state,'indexed_chessboard':indexed_chessboard, 'dic_pieces':dic_pieces, 'suk_player': player.suk_player})
 
 
-
 def move(request):
+    """
+    Receives POST request with new move. Evaluates if the move is possible and returns 
+    the new updated board if move is possible. Else it returns data = {'move':False}
+    """
     if request.method == 'POST':
-
+        #parses request body
         decoded_body = request.body.decode('utf-8')
         body = json.loads(decoded_body)
-        board = body['board']
-        #added because the first time the board is acessed is through context var. Need to replace by postgres database. Howver makes more sense to replace None by 0 since js cant parse None...
-        if isinstance(board, str): #pode-se retirar se para aceder ao board se for a database
-            try:
-                board = eval(body['board'])
-            except:
-                raise Exception(f'Couldnt parse board {body}')
-        
-        moves = [convert_index_to_pos(index, board) for index in body['moves']]
-        move_result =  check_move(board,moves[0],moves[1])
-        if move_result:
-            data = {'move':True, 'updated_board':move_result}
-        else:
+        suk_player = body['suk_player']
+        indexed_moves = body['moves']
+        #gets last board state
+        player = Player.objects.filter(suk_player=suk_player).first()
+        last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
+        #if user has no active game
+        if not last_active_game:
+            print('No games active for user')
             data = {'move':False}
             return JsonResponse(data)
         
-        #keep moves history in postgres
-        suk_player = body['suk_player'] #just pass this in ajax request to be able to acess user (look for better solution because this allows no authenticated users to use endpoint)
-        player = Player.objects.filter(suk_player=suk_player).first()
-        last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
-        game_detail = GameDetail(suk_game = last_active_game, suk_player = player, board_state = move_result)
-        game_detail.save()
-        return JsonResponse(data)
+        board = GameDetail.objects.filter(suk_game = last_active_game.suk_game).latest('id').board_state
+        #checks move possibility
+        moves = [convert_index_to_pos(index, board) for index in indexed_moves]
+        move_result =  check_move(board,moves[0],moves[1])
+        #if there is a new move, then updates database and sends the new board state back to template
+        if move_result:
+            data = {'move':True, 'updated_board':move_result}
+            game_detail = GameDetail(suk_game = last_active_game, suk_player = player, board_state = move_result)
+            game_detail.save()
+        else:
+            data = {'move':False}
+        
+        return JsonResponse(data)        
+        
 
 def end_game(request):
-    """Updates the active game col to False"""
+    """Updates the active game field to False"""
     if request.method == 'POST':
 
         decoded_body = request.body.decode('utf-8')
@@ -112,6 +117,9 @@ def end_game(request):
         suk_player = body['suk_player']
         #updates active game active=False
         last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
+        if not last_active_game:
+            print('Game already finished')
+            return JsonResponse({'end_game':'sucess'})    
         last_active_game.game_active = False
         last_active_game.save()
         return JsonResponse({'end_game':'sucess'})
