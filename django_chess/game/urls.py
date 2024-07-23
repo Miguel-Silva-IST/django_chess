@@ -11,5 +11,6 @@ urlpatterns = [
     path("favicon.ico", views.favicon, name='favicon'),
     path("sandbox/", views.sandbox, name='sandbox'),
     path('move/', views.move, name='test'),
-    path('end_game/', views.end_game, name='end_game')
+    path('end_game/', views.end_game, name='end_game'),
+    path('time_travell/', views.time_travell, name='time_travell')
 ]

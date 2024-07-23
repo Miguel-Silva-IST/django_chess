@@ -6,10 +6,27 @@ from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from game.chess_engine.main import *
-from .utils import add_index_chessboard, convert_index_to_pos
+from .utils import add_index_chessboard, convert_index_to_pos, get_active_game, get_player_from_request
 from .models import Game, GameDetail
 from player.models import Player
 import json
+
+dic_pieces = {
+            -1 : '<i class="fa-regular fa-chess-pawn"></i>',
+            -2 : '<i class="fa-regular fa-chess-rook"></i>',
+            -3 : '<i class="fa-regular fa-chess-knight"></i>',
+            -4 : '<i class="fa-regular fa-chess-bishop"></i>',
+            -5 : '<i class="fa-regular fa-chess-queen"></i>',
+            -6 : '<i class="fa-regular fa-chess-king"></i>',
+             1 : '<i class="fa-solid fa-chess-pawn"></i>',
+             2 : '<i class="fa-solid fa-chess-rook"></i>',
+             3 : '<i class="fa-solid fa-chess-knight"></i>',
+             4 : '<i class="fa-solid fa-chess-bishop"></i>',
+             5 : '<i class="fa-solid fa-chess-queen"></i>',
+             6 : '<i class="fa-solid fa-chess-king"></i>',
+             None : ''
+            }
+
 
 
 
@@ -35,11 +52,8 @@ def sandbox(request):
     is resumed. Else it starts a new game and renders the new game board. 
     """
     if request.method == 'GET':
-        #find if there are active games for user
-        user = request.user
-        player = Player.objects.filter(user=user).first()
-        last_active_game = Game.objects.filter(Q(suk_player_1 = player.suk_player) | Q(suk_player_2 = player.suk_player), game_active = True ).first()
-        #if no active games then starts one
+        player = get_player_from_request(request)
+        last_active_game = get_active_game(player)
         if not last_active_game:
             #creates new game
             game = Game(suk_player_1 = player,suk_player_2 = player, game_active = True)
@@ -55,21 +69,6 @@ def sandbox(request):
             
         
         indexed_chessboard = add_index_chessboard(board_state)[::-1]
-        dic_pieces = {
-            -1 : '<i class="fa-regular fa-chess-pawn"></i>',
-            -2 : '<i class="fa-regular fa-chess-rook"></i>',
-            -3 : '<i class="fa-regular fa-chess-knight"></i>',
-            -4 : '<i class="fa-regular fa-chess-bishop"></i>',
-            -5 : '<i class="fa-regular fa-chess-queen"></i>',
-            -6 : '<i class="fa-regular fa-chess-king"></i>',
-             1 : '<i class="fa-solid fa-chess-pawn"></i>',
-             2 : '<i class="fa-solid fa-chess-rook"></i>',
-             3 : '<i class="fa-solid fa-chess-knight"></i>',
-             4 : '<i class="fa-solid fa-chess-bishop"></i>',
-             5 : '<i class="fa-solid fa-chess-queen"></i>',
-             6 : '<i class="fa-solid fa-chess-king"></i>',
-             None : ''
-        }
         return render(request, 'game/sandbox.html', context = {'chessboard':board_state,'indexed_chessboard':indexed_chessboard, 'dic_pieces':dic_pieces, 'suk_player': player.suk_player})
 
 
@@ -82,11 +81,11 @@ def move(request):
         #parses request body
         decoded_body = request.body.decode('utf-8')
         body = json.loads(decoded_body)
-        suk_player = body['suk_player']
+        player = get_player_from_request(body = body)
+        suk_player = player.suk_player
         indexed_moves = body['moves']
         #gets last board state
-        player = Player.objects.filter(suk_player=suk_player).first()
-        last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
+        last_active_game = get_active_game(player)
         #if user has no active game
         if not last_active_game:
             print('No games active for user')
@@ -123,7 +122,31 @@ def end_game(request):
         last_active_game.game_active = False
         last_active_game.save()
         return JsonResponse({'end_game':'sucess'})
+    
 
+
+def time_travell(request):
+    """
+    Receives get request with current play id 
+    and requests next play or previous
+    """
+    if request.method == 'POST':
+        print('RECEBEU POST REQUEST')
+        decoded_body = request.body.decode('utf-8')
+        body = json.loads(decoded_body)
+        play_id = body['play_id']
+        player = get_player_from_request(body=body)
+        last_active_game = get_active_game(player)
+        last_id = GameDetail.objects.filter(suk_game = last_active_game.suk_game).latest('id').id
+        id_target_game_state = int(last_id) - int(play_id)
+        target_game_detail = GameDetail.objects.filter(suk_game = last_active_game.suk_game, id = id_target_game_state).first()
+        if target_game_detail:
+            target_board_state = target_game_detail.board_state
+            indexed_chessboard = add_index_chessboard(target_board_state)[::-1]       
+        else:
+            indexed_chessboard = None
+
+        return JsonResponse({'indexed_chessboard':indexed_chessboard, 'dic_pieces':dic_pieces})
 
 
 @require_GET

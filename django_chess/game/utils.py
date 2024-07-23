@@ -1,3 +1,8 @@
+from player.models import Player
+from game.models import Game
+import json
+from django.db.models import Q
+
 def add_index_chessboard(chessboard):
     i = 0
     indexed_chessboard = []
@@ -27,3 +32,27 @@ def convert_pos_to_index(pos, board):
     board_w = len(board[0])
     index = pos[0]*board_w + pos[1]
     return index
+
+
+
+def get_player_from_request(request = False, body = False):
+    """If suk_player = False then it gets player from user object
+       Else gets player from suk_player in body
+    """
+    if body:
+        suk_player = body['suk_player']
+        player = Player.objects.filter(suk_player=suk_player).first()
+    else:
+        user = request.user
+        player = Player.objects.filter(user=user).first()
+    return player
+
+
+
+def get_active_game(player):
+    '''
+    Gets last active game for player object
+    '''
+    suk_player = player.suk_player
+    last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
+    return last_active_game

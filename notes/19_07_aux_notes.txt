@@ -1,0 +1,36 @@
+1 - possible moves pre view:
+- 
+
+
+
+
+
+
+
+
+
+2 - time travell moves:
+- 2  buttons
+- < : sends request to move_back endpoint
+- > : sends request to move_front endpoint
+- define new variable in js called play_id : starts as None
+- when clicking buttons, it sends play_id and expects response from endpoint to render board update
+- endpoint returns at similarity to move endpoint the pos_i and pos_f of piece that moved
+and gets rendered by render_updated_board() -> doesnt work for position where there was an eat.
+solution - get al board an render it all
+
+- problem : may only allow move once current_board is most updated board. otherwise complete chaos
+- solution : can implement a button click counter that only when it returns to the initial state
+(same clicks left as clicks right) it allows to move. otherwise move = False
+
+
+
+
+
+
+
+
+
+
+
+3 - move rules (alternance between b/w) and points counting system:

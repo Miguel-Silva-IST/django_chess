@@ -1,5 +1,6 @@
 var updated_board;
 let moves = [];
+var play_id = 0;
 
 
 
@@ -85,7 +86,7 @@ function EndGame() {
 
 
 
-//Saves piece index thatplayer wants to move
+//Saves piece index that player wants to move
 function move_track(moves, piece_index){
     console.log(piece_index)
     if (moves.length == 0) {
@@ -149,3 +150,92 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
   });
   
+
+
+
+  function GetTimeTravell() {
+    // Sends a get request and receives indexed_board
+    // After receiving indexed_board it calls the render 
+
+    return new Promise((resolve, reject) => {
+
+    const csrftoken = document.getElementById('csrf').getAttribute('data-csrf');
+    const suk_player = document.getElementById('suk_player').getAttribute('data-suk_player');
+
+    // Set up default AJAX settings
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    //AJAX call
+    $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/time_travell/",
+        contentType: "application/json",
+        data: JSON.stringify({
+            'play_id': play_id,
+            'suk_player': suk_player
+        }),
+        success: function(data) {
+            //returns promise
+            resolve(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Handle errors if needed
+            console.error('Error: ' + textStatus + ' - ' + errorThrown);
+        }
+    });
+})
+};
+
+
+
+
+function TimeTravell(travell_direction) {
+    //runs through full board and modifies inner html
+    if (travell_direction == 'previous'){
+        play_id++
+    } else if (travell_direction == 'next') {
+        play_id--
+    }
+
+    console.log('Showing play_id',play_id)
+
+    GetTimeTravell().then(function(result) {
+        if (result.indexed_chessboard){
+            console.log(result.indexed_chessboard)
+            console.log(result.dic_pieces)
+            render_full_board(result.indexed_chessboard, result.dic_pieces)
+        } else{
+            console.log('Couldnt receive time travell board state!!')
+            //removes play_id increment/decrement to avoid acumulation
+            if (travell_direction == 'previous'){
+                play_id--
+            } else if (travell_direction == 'next') {
+                play_id++
+            }
+        }
+        
+    }).catch(function(error) {
+        console.error('Error:', error);
+    });
+    return 0
+}
+
+
+
+function render_full_board(indexed_chessboard, dic_pieces){
+    
+    for (let row = 0; row < indexed_chessboard.length; row++) {
+        for (let col = 0; col < indexed_chessboard[row].length; col++) {
+            // Access the first and second elements of each pair
+            let piece = indexed_chessboard[row][col][0];
+            let index = indexed_chessboard[row][col][1];
+            square = document.getElementById(index)
+            piece_html = dic_pieces[piece]
+            square.innerHTML = piece_html
+        }
+    }
+}

@@ -200,13 +200,16 @@ body {
 }
 .chessboard_container .game_settings {
   position: absolute;
-  left: 35vh; /* Adjust as necessary to position left */
+  margin-left: 30vmin;
   transform: translateY(-50%);
   top: 50%;
   padding: 10px;
   background-color: #333;
   border: 1px solid #000;
   border-radius: 5px;
+}
+.chessboard_container .game_settings i {
+  font-size: 3vmin;
 }
 .chessboard_container .end_game_popup {
   position: absolute;

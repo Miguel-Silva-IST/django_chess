@@ -25,13 +25,16 @@
     </div>
     <div class="game_settings">
         <button onclick="EndGame()" id="end_game_button"><i class="fa-regular fa-flag"></i></button>
+        <p></p>
+        <button onclick="TimeTravell('previous')"><</button>
+        <button onclick="TimeTravell('next')">></button>
     </div>
     <div class="end_game_popup" id ="end_game_popup">
         <button id="close_end_game_popup"><i class="fa-solid fa-x"></i></button>
         <div class="game_menu" id="close_end_game_popup_div">
             <a><h1>Game Menu</h1></a>
             <a href="{% url 'sandbox' %}"><button>Restart Game</button></a>
-            <a href="{% url 'home' %}"><button>Retur Home</button></a>
+            <a href="{% url 'home' %}"><button>Return Home</button></a>
         </div>
         
     </div>
@@ -45,5 +48,7 @@
 <div id="chessboard" data-chessboard="{{ chessboard }}"></div>
 <div id="csrf" data-csrf="{{ csrf_token }}"></div>
 <div id="suk_player" data-suk_player="{{ suk_player }}"></div>
+
+
 
 {% endblock %}

@@ -23,13 +23,11 @@ class PossibleMoves:
     def __init__(self, board, piece):
         self._board = board
         self._piece = piece      
-        
+        self.possible_moves = []
     
     
     def check_possible_moves(self):
         """Iterates in all directions to get possible moves"""
-        
-        self.possible_moves = []
         
         for dir in self._piece.dir_moves:
             pos_f = copy.deepcopy(self._piece.pos)
@@ -60,7 +58,7 @@ class PossibleMoves:
                 #if piece can only move one square breaks 
                 if not self._piece.n_moves:
                     break
-                
+           
                         
 
 
@@ -119,7 +117,8 @@ class PawnMoves(PossibleMoves):
     
     
     def check_en_passant(self):
-        pass                    
+        pass  
+
         
     
     
@@ -171,6 +170,8 @@ class KingMoves(PossibleMoves):
         super().check_possible_moves()
         
         #add here extra possible move for rock n roll
+    
+
 
 
 
