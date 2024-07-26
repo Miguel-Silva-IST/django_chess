@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from game.chess_engine.main import *
-from .utils import add_index_chessboard, convert_index_to_pos, get_active_game, get_player_from_request
+from .utils import *
 from .models import Game, GameDetail
 from player.models import Player
 import json
@@ -52,7 +52,7 @@ def sandbox(request):
     is resumed. Else it starts a new game and renders the new game board. 
     """
     if request.method == 'GET':
-        player = get_player_from_request(request)
+        player = get_player_from_request(request = request)
         last_active_game = get_active_game(player)
         if not last_active_game:
             #creates new game
@@ -63,9 +63,9 @@ def sandbox(request):
             game_detail = GameDetail(suk_game = game, suk_player = player, board_state = board_state)
             game_detail.save()
 
-        #if game still ative, returns from the last game
+        #if game still active, returns from the last game
         else:
-            board_state = GameDetail.objects.filter(suk_game = last_active_game.suk_game).order_by('-id').first().board_state
+            board_state = get_last_board_state(last_active_game)
             
         
         indexed_chessboard = add_index_chessboard(board_state)[::-1]
@@ -92,7 +92,7 @@ def move(request):
             data = {'move':False}
             return JsonResponse(data)
         
-        board = GameDetail.objects.filter(suk_game = last_active_game.suk_game).latest('id').board_state
+        board = get_last_board_state(last_active_game)
         #checks move possibility
         moves = [convert_index_to_pos(index, board) for index in indexed_moves]
         move_result =  check_move(board,moves[0],moves[1])
@@ -101,6 +101,8 @@ def move(request):
             data = {'move':True, 'updated_board':move_result}
             game_detail = GameDetail(suk_game = last_active_game, suk_player = player, board_state = move_result)
             game_detail.save()
+            #updates cache
+            cache.set(last_active_game, move_result)
         else:
             data = {'move':False}
         
@@ -114,13 +116,19 @@ def end_game(request):
         decoded_body = request.body.decode('utf-8')
         body = json.loads(decoded_body)
         suk_player = body['suk_player']
-        #updates active game active=False
-        last_active_game = Game.objects.filter(Q(suk_player_1 = suk_player) | Q(suk_player_2 = suk_player), game_active = True ).first()
+        player = get_player_from_request(body=body)
+        last_active_game = get_active_game(player)
         if not last_active_game:
             print('Game already finished')
-            return JsonResponse({'end_game':'sucess'})    
+            return JsonResponse({'end_game':'sucess'})
+        #updates active game active=False    
         last_active_game.game_active = False
         last_active_game.save()
+        
+        #deletes cache on current active game
+        cache.delete(f'active_game_{suk_player}')
+        #deletes cache on last board state
+        cache.delete(last_active_game)
         return JsonResponse({'end_game':'sucess'})
     
 
