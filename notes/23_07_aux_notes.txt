@@ -1,0 +1,6 @@
+Para aumentar a velocidad do jogo era bom fazer um cache do resultado no server:
+
+
+1 - click1 numa peça vai direto por ajax request
+2 - o frontend recebe info de possible moves e dá render no tabuleiro
+3 - click2 é enviado para o backend e se estiver dentro das jogadas possiveis (dar cache destas) aí sim altera o estado

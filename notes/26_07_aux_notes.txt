@@ -1,0 +1,6 @@
+Reddis cashing aplicações:
+1 - cache first click for moving computed result
+2 - cache user specific data such as active game,
+suk_player, and other constantly queried elements
+during game session to avoid reprocessing in every
+play 

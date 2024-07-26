@@ -185,10 +185,16 @@ body {
   flex: 1;
   background-color: #aeb6ab;
 }
+.chessboard_container .chessboard .black:active {
+  background-color: #62db3663;
+}
 
 .chessboard_container .chessboard .white {
   flex: 1;
   background-color: #fff;
+}
+.chessboard_container .chessboard .white:active {
+  background-color: #62db3663;
 }
 .chessboard_container .chessboard .piece{
   display: grid;

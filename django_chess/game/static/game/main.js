@@ -239,3 +239,16 @@ function render_full_board(indexed_chessboard, dic_pieces){
         }
     }
 }
+
+
+function render_piece_possible_moves(indexed_squares){
+    
+    for (let i = 0; i < indexed_squares.length; i++) {
+        
+        // Access the first and second elements of each pair
+        let square_index = indexed_squares[i];
+        square = document.getElementById(square_index)
+        square.style.backgroundColor = 'green';
+    
+    }
+}
