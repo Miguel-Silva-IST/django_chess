@@ -1,11 +1,10 @@
 #As standard reference, white rook is located at pos [0,0]
 
 
+from .utils import *
 from enum import Enum
 from .colors import BLACK, WHITE
 from .pieces import *
-from .utils import *
-from .board import *
 
 class BoardMapping(Enum):
     """

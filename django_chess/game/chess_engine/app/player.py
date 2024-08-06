@@ -1,4 +1,4 @@
 class Player:
-    def __init__(self):
+    def __init__(self, color):
         self.points = 0
-        self.color = 1
+        self.color = color

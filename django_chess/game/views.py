@@ -95,7 +95,7 @@ def move(request):
         board = get_last_board_state(last_active_game)
         #checks move possibility
         moves = [convert_index_to_pos(index, board) for index in indexed_moves]
-        move_result =  check_move(board,moves[0],moves[1])
+        move_result =  check_move(board,moves[0],moves[1], last_active_game)
         #if there is a new move, then updates database and sends the new board state back to template
         if move_result:
             data = {'move':True, 'updated_board':move_result}

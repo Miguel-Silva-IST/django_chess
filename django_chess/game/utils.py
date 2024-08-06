@@ -93,7 +93,6 @@ def get_last_board_state(last_active_game):
         board_state = GameDetail.objects.filter(suk_game = last_active_game.suk_game).order_by('-id').first().board_state
         cache.set(last_active_game, board_state)
         return board_state
-    
 
 
 #def clean_cache(active_game_cache = False, board_state_cache = False):

@@ -1,10 +1,7 @@
 """Module with multiple distinct classes and functions that are used across the code"""
 
 from .colors import BLACK, WHITE
-from .board import *
 import copy
-
-
 
 def check_board_in_boundaries(board,pos):
     """
@@ -18,20 +15,21 @@ def check_board_in_boundaries(board,pos):
 
 
 
-def find_king(piece, board):
+def find_king(player, board):
     """Returns king value"""
     
-    if piece.color == WHITE:
-        king_val = BoardMapping('WKI').val
-    elif piece.color == BLACK:
-        king_val == BoardMapping('BKI').val
+    if player.color == WHITE:
+        king_val = -6  #cleaner with boardmappign but resulted in circular import...
+    elif player.color == BLACK:
+        king_val = 6
     
     
-    board_size = len(board)
+    board_state = board.board
+    board_size = len(board_state)
     
     for r in range(board_size):
         for c in range(board_size):
-            if board_size[r][c] == king_val:
+            if board_state[r][c] == king_val:
                 king_pos = [r,c]
                 break
     
@@ -52,6 +50,14 @@ def verify_piece_in_line_king(piece, king):
     elif abs(piece.pos[0] - king.pos[0])/abs(piece.pos[1]-king.pos[1]) == 1:
         return 1
     else:
-        return 0 
-    
-    
+        return 0
+
+
+def switch_player_turn_to_play(player_turn_to_play):
+    if player_turn_to_play == WHITE:
+        return BLACK
+    elif player_turn_to_play == BLACK:
+        return WHITE
+    else:
+        print('No player turn registered yet')
+        return False

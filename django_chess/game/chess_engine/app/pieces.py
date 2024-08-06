@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from .colors import WHITE, BLACK
 from .directions import RIGHT, LEFT, FRONT, BACK
-from .board import *
-from .moves import *
+from .move_registry import *
 #nao estou a contabilizar comer peças
 #1 - será que devia criar classes para o movimento das peças em vez de meter tudo numa class?
 #2 - para além de checkar a questao do movimento é preciso checkar o movimentoa a comer a peça
@@ -36,7 +35,8 @@ class Pawn(Piece):
             
         self.points = 1
         self.n_moves = 0
-        self.move = PawnMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
 
         
 
@@ -49,7 +49,8 @@ class Rook(Piece):
         self.dir_moves = [[0,RIGHT],[0,LEFT],[FRONT,0],[BACK,0]]
         self.points = 4
         self.n_moves = 1
-        self.move = RookMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
         
 
 class Knight(Piece):
@@ -60,7 +61,8 @@ class Knight(Piece):
         self.dir_moves = [[FRONT,2*RIGHT],[BACK,2*RIGHT],[BACK,2*LEFT],[FRONT,2*LEFT],[2*FRONT,RIGHT],[2*BACK,RIGHT],[2*BACK,LEFT],[2*FRONT,LEFT]]
         self.points = 3
         self.n_moves = 0
-        self.move = KnightMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
 
 class Bishop(Piece):
     
@@ -70,7 +72,8 @@ class Bishop(Piece):
         self.dir_moves = [[FRONT,RIGHT],[BACK,LEFT],[BACK,RIGHT],[FRONT,LEFT]]
         self.points = 3
         self.n_moves = 1
-        self.move = BishopMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
 
 class Queen(Piece):
         
@@ -80,7 +83,8 @@ class Queen(Piece):
         self.dir_moves = [[FRONT,RIGHT],[BACK,LEFT],[BACK,RIGHT],[FRONT,LEFT],[0,RIGHT],[0,LEFT],[FRONT,0],[BACK,0]]
         self.points = 6
         self.n_moves = 1
-        self.move = QueenMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
 
 
 class King(Piece):
@@ -90,7 +94,8 @@ class King(Piece):
         super().__init__(pos, color)
         self.dir_moves = [[FRONT,RIGHT],[BACK,LEFT],[BACK,RIGHT],[FRONT,LEFT],[0,RIGHT],[0,LEFT],[FRONT,0],[BACK,0]]
         self.n_moves = 0
-        self.move = KingMoves
+        move_class = MovesRegistry.get_move(self.__class__.__name__)
+        self.move = move_class if move_class else None
 
 
 

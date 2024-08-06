@@ -1,0 +1,6 @@
+KEYS   :   VALS
+'player_to_play_{last_active_game.suk_game}' : next_player_to_play   EX.: (last_active_game_72 : BLACK)
+'{last_active_game}' : move_result Ex.: (<game_object> : board_state)
+'suk_player' : player_object Ex.: (32 : <player_object>) #depending on request can get player obj by user or suk_player 
+user_object : player_object Ex.: (<user_object> : <player_object>)
+'active_game_{suk_player}' : last_active_game  Ex.: ('active_game_{suk_player}' : game_object)
